@@ -1,35 +1,53 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import React, {useState} from 'react';
+import AddTaskForm from './components/AddTaskForm/AddTaskForm.tsx';
+import Task from "./components/Task/Task.tsx";
 
-function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+const App = () => {
+
+    const [tasks, setTasks] = useState([
+        { id: '1', text: 'Первая задача' },
+        { id: '2', text: 'Вторая задача' },
+        { id: '3', text: 'Третья задача' }
+    ]);
+    const [newTasks, setNewTask] = useState('');
+
+    const ChangeAdd = (e: React.ChangeEvent<HTMLInputElement>) =>{
+        setNewTask(e.target.value);
+    }
+
+    const addTask = () => {
+        const data = new Date();
+        const dataString = data.toString();
+        const newTask = {
+            id: dataString,
+            text: newTasks,
+        };
+        setTasks([...tasks, newTask]);
+
+        console.log(newTasks);
+
+    }
+
+    const delateTask = (id:string) =>{
+        setTasks(tasks.filter(task => task.id !== id));
+    }
+
+
+    return (
+        <>
+            <div className="container">
+            <AddTaskForm OnChangeAdd={ChangeAdd} addTask={addTask} text={newTasks}/>
+            <h1>Список задач</h1>
+            <hr/>
+
+            {tasks.map(tasks => (
+                <Task key={tasks.id} text={tasks.text} remove={() => delateTask(tasks.id)}/>
+            ))}
+            </div>
+        </>
+    )
+};
 
 export default App
